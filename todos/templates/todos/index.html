@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block contents %}
+    <script type="text/javascript">
+        function changeCompFlg(intID){
+            var elm = document.getElementsByName("update"+intID).item(0);
+            elm.submit()
+        }
+        function deleteCheck(intID){
+            var res = confirm("削除しますか？");
+            if(res == true){
+                var elm = document.getElementsByName("delete"+intID).item(0);
+                elm.submit()
+            }
+        }
+        function insertCheck(){
+            var elm = document.getElementsByName("add_name").item(0);
+            if (elm.value == ""){
+                alert("タスクに入力してください");
+            }
+            else{
+            var elm2 = document.getElementsByName("inseret").item(0);
+            elm2.submit()
+            }
+        }
+    </script>
+    {% if task_list %}
+        <br>
+            <table border="3" class="table table-striped">
+                <tr>
+                    <th>終了フラグ</th>
+                    <th>タスク名</th>
+                    <th>内容</th>
+                    <th></th>
+                </tr>
+                {% for task in task_list.all %}
+                    <tr>
+                        <form name="update{{task.id}}" action="{% url 'update' task.id %}" method="post">
+                            {% csrf_token %}
+                        </form>
+                        {% if task.comp_flg %}
+                            <td><INPUT type="checkbox" name="comp" value={{task.id}} onclick="changeCompFlg({{task.id}})" checked></td>
+                            <td><s>{{ task.task_nm }}</s></td>
+                            <td><s>{{ task.task_text }}</s></td>
+                        {% else %}
+                            <td><INPUT type="checkbox" name="comp" value={{task.id}} onclick="changeCompFlg({{task.id}})"></td>
+                            <td>{{ task.task_nm }}</td>
+                            <td>{{ task.task_text }}</td>
+                        {% endif %}
+                        <form name="delete{{task.id}}" action="{% url 'delete' task.id %}" method="post">
+                            {% csrf_token %}
+                        </form>
+                        <td>
+                            <input type="submit" value="削除" onclick="deleteCheck({{task.id}})">
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <br>
+            <form name="inseret" action="{% url 'create' %}" method="post">
+                {% csrf_token %}
+                <table border="0" classtable="striped">
+                    <th>
+                        タスク追加
+                    </th>
+                    <tr>
+                        <td>タスク：</td>
+                        <td><INPUT type="textbox" name="add_name"></td>
+                    </tr>
+                    <tr>
+                        <td>内容 ：</td>
+                        <td><INPUT type="textbox" name="add_text"></td>
+                    </tr>
+                </table>
+            </form>
+            <input type="submit" value="追加" onclick="insertCheck()">
+
+    {% else %}
+        <p>No tasks are available.</p>
+    {% endif %}
+{% endblock contents %}

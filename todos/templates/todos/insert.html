@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block contents %}
+<form action="{% url 'create' %}" method="post">
+    {% csrf_token %}
+    <table border="0" classtable="striped">
+        <th>
+            タスク追加
+        </th>
+        <tr>
+            <td>タスク：</td>
+            <td><INPUT type="textbox" name="add_name"></td>
+        </tr>
+        <tr>
+            <td>内容：</td>
+            <td><INPUT type="textbox" name="add_text"></td>
+        </tr>
+    </table>
+    <input type="submit" value="追加">
+</form>
+
+{% endblock contents %}
